@@ -178,11 +178,16 @@ def obtener_orientacion_mano(wrist_coords, middle_finger_mcp_coords, ratio_thres
     Returns:
         Un string indicando la orientación:
         - "VERTICAL"
+        - "BOCA_ABAJO" (si la muñeca está por encima del MCP)
         - "HORIZONTAL_IZQUIERDA" (dedos apuntan predominantemente a la izquierda)
         - "HORIZONTAL_DERECHA" (dedos apuntan predominantemente a la derecha)
         - "DIAGONAL_INDETERMINADA" (si no es claramente vertical ni horizontal)
         - "INDETERMINADA_ESTATICA" (si los puntos son casi idénticos)
     """
+    
+    if wrist_coords[1] < middle_finger_mcp_coords[1]:
+        return "BOCA_ABAJO"
+    
     delta_x = middle_finger_mcp_coords[0] - wrist_coords[0]
     # En la mayoría de las configuraciones de imagen, Y disminuye hacia arriba.
     # Por lo tanto, si mcp_middle está "encima" de wrist, delta_y será negativo.
@@ -243,12 +248,11 @@ mpDibujo = mp.solutions.drawing_utils
 # Esto sirve para darle estilo al dibujo
 mpDrawingStyles = mp.solutions.drawing_styles
 
-buffer_letras = ""
+mensaje_mostrar = ""
 COOLDOWN = 2.0     # segundos mínimos entre detecciones
 ultimo_detection_time = 0.0
 ultimo_tiempo = time.time()
 
-# --- (Al inicio de tu script, antes del bucle while True) ---
 previous_pinky_tip_j = None
 previous_index_tip_z = None
 MOTION_THRESHOLD_J = 10 # Ajustar
@@ -276,7 +280,6 @@ while True:
     if resultado.multi_hand_landmarks:
         # En caso de que si por cada landmark mostramos el punto
         for id, lm in enumerate(resultado.multi_hand_landmarks):
-            mensaje_mostrar = ""
             mpDibujo.draw_landmarks(img, lm, mpManos.HAND_CONNECTIONS, mpDrawingStyles.get_default_hand_landmarks_style(), mpDrawingStyles.get_default_hand_connections_style()) # Captura la mano entera todo el rato
             # El id corresponde con los números de la imagen PuntosMano.png 
             # for id, lm in enumerate(handLms.landmark): # Captura cada dedo por separado
@@ -326,35 +329,72 @@ while True:
             anular_extendidoHI = anular_extendido_horizontal_izquierda(ring_tip, ring_pip, ring_mcp)
             anular_extendidoV = anular_levantado_vertical(ring_tip, ring_pip, ring_mcp)
             # Meñique
-            meñique_extendidoHD = menique_extendido_horizontal_derecha(pinky_tip, pinky_pip, pinky_mcp)
-            meñique_extendidoHI = menique_extendido_horizontal_izquierda(pinky_tip, pinky_pip, pinky_mcp)
-            meñique_extendidoV = menique_levantado_vertical(pinky_tip, pinky_pip, pinky_mcp)
+            menique_extendidoHD = menique_extendido_horizontal_derecha(pinky_tip, pinky_pip, pinky_mcp)
+            menique_extendidoHI = menique_extendido_horizontal_izquierda(pinky_tip, pinky_pip, pinky_mcp)
+            menique_extendidoV = menique_levantado_vertical(pinky_tip, pinky_pip, pinky_mcp)
             # Pulgar
             pulgar_extendidoHD = pulgar_extendido_horizontal_derecha(thumb_tip, thumb_ip, thumb_mcp)
             pulgar_extendidoHI = pulgar_extendido_horizontal_izquierda(thumb_tip, thumb_ip, thumb_mcp)
             pulgar_extendidoV = pulgar_levantado_vertical(thumb_tip, thumb_ip, thumb_mcp)
            
             mensaje = ""
+            orientacion = obtener_orientacion_mano(wrist, middle_mcp) # Obtenemos la orientación de la mano
             
-            if obtener_orientacion_mano(wrist, middle_mcp)=="VERTICAL":
-                if not indice_extendidoV and not corazon_extendidoV and not anular_extendidoV and not meñique_extendidoV and not pulgar_extendidoV  and not pulgar_extendidoHD and not pulgar_extendidoHI:
+            if orientacion=="VERTICAL":
+                if not indice_extendidoV and not corazon_extendidoV and not anular_extendidoV and not menique_extendidoV and thumb_tip[1]>middle_mcp[1] and not pulgar_extendidoV:
                     mensaje="A"
                 # elif abs(index_tip[1] - thumb_tip[1]) < 360 and index_tip[1] - middle_pip[1]<0 and index_tip[1] - middle_tip[1] < 0 and index_tip[1] - index_pip[1] > 0:
                 #     mensaje = "C"
-                elif abs(middle_tip[1] - thumb_tip[1]) < 10 and abs(ring_tip[1] - thumb_tip[1]) < 10 and (meñique_extendidoHI or meñique_extendidoHD) and indice_extendidoV: 
+                elif indice_extendidoHD or indice_extendidoHI and abs(thumb_tip[0]-middle_tip[0])>5 or (corazon_extendidoHD or corazon_extendidoHI) and\
+                    abs(thumb_tip[0]-pinky_tip[0])>15 or (menique_extendidoHD or menique_extendidoHI) and indice_extendidoV: 
                     mensaje = "D"
-                elif not indice_extendidoV and not corazon_extendidoV and not anular_extendidoV and not meñique_extendidoV and \
-                    thumb_tip[1] > index_dip[1] and thumb_tip[1] > middle_dip[1] and thumb_tip[1] > ring_dip[1] and thumb_tip[1] > pinky_dip[1]: # Si todos están hacia abajo y la punta del pulgar está más alto que todos es la E
+                elif not indice_extendidoV and not corazon_extendidoV and not anular_extendidoV and not menique_extendidoV and (pulgar_extendidoV or pulgar_extendidoHD or pulgar_extendidoHI):
                     mensaje = "E"
-           
+                elif menique_extendidoV and corazon_extendidoV and anular_extendidoV and index_tip[1] > thumb_tip[1] and 10<(index_tip[1]-thumb_tip[1])<30:
+                    mensaje="F"
+                elif not (menique_extendidoV or menique_extendidoHD or menique_extendidoHI) and not anular_extendidoV and corazon_extendidoV and indice_extendidoV and (pulgar_extendidoHI or pulgar_extendidoHD):
+                    mensaje = "H"
+                elif index_tip[1]>index_mcp[1] and middle_tip[1]>middle_mcp[1] and ring_tip[1]>ring_mcp[1] and menique_extendidoV:
+                    mensaje="I"
+                elif indice_extendidoV and (pulgar_extendidoHD or pulgar_extendidoHI) and not menique_extendidoV and not anular_extendidoV and not corazon_extendidoV:
+                    mensaje="L"
+                elif anular_extendidoV and corazon_extendidoV and 15 > abs(thumb_tip[1]-index_tip[1]) > 5 and not (pulgar_extendidoHD or pulgar_extendidoHI):
+                    mensaje = "O"
+                elif indice_extendidoV and corazon_extendidoV and anular_extendidoV and not menique_extendidoV and abs(ring_tip[0]-index_tip[0]) < 50:
+                    mensaje = "P"
+                elif menique_extendidoV and corazon_extendidoV and anular_extendidoV and indice_extendidoV and abs(thumb_tip[0]-index_tip[0]) < 40:
+                    mensaje = "Q" # La letra Q está tanto en orientación vertical como indeterminada porque es una postura compleja
+                elif not menique_extendidoV and not anular_extendidoV and abs(index_pip[1]-middle_pip[1])<15 and abs(index_pip[0]-middle_pip[0])<15: # Si el punto PIP del dedo Corazón está entre el pip y el dip del índice significa que los dedos están cruzados
+                    mensaje = "R"
+                elif anular_extendidoV and corazon_extendidoV and (pulgar_extendidoHD or pulgar_extendidoHI) and 40 > abs(thumb_mcp[1]-index_tip[1]) > 5:
+                    mensaje = "S"
+                elif not menique_extendidoV and not anular_extendidoV  and indice_extendidoV and corazon_extendidoV and 5 < abs(index_tip[0]-middle_tip[0]) > 40:
+                    mensaje = "U"
+                elif index_tip[1]>index_mcp[1] and middle_tip[1]>middle_mcp[1] and ring_tip[1]>ring_mcp[1] and pinky_tip[1]>pinky_dip[1]:
+                    mensaje="Y"
+            elif orientacion == "DIAGONAL_INDETERMINADA":
+                if menique_extendidoV and corazon_extendidoV and anular_extendidoV and indice_extendidoV and abs(pinky_tip[0]-index_tip[0]) <70:
+                    mensaje = "Q" # La letra Q está tanto en orientación vertical como indeterminada porque es una postura compleja
+            elif orientacion == "BOCA_ABAJO":
+                if index_tip[1]<index_mcp[1] and middle_tip[1]<middle_mcp[1] and ring_tip[1]<ring_mcp[1]\
+                    and (not menique_extendidoV or not menique_extendidoHD or not menique_extendidoHI):
+                    mensaje = "M" 
+                    
             now = time.time()
             if mensaje:
-                if now - ultimo_detection_time >= COOLDOWN:
-                    buffer_letras += mensaje
+                if now - ultimo_detection_time >= COOLDOWN: 
+                    mensaje_mostrar += mensaje
                     ultimo_detection_time = now
                     ultimo_tiempo = time.time()
-                
-            cv2.putText(img, buffer_letras, (0, 100), 
+            else:
+                mensaje_mostrar = ""
+            
+            print("Indice TIP Altura: " + str(index_tip[1]))
+            print("Corazon TIP Altura: " + str(middle_tip[1]))
+            print("Indice TIP Distancia: " + str(index_tip[0]))
+            print("Corazon TIP Distancia: " + str(middle_tip[0]))
+            
+            cv2.putText(img, mensaje_mostrar, (0, 100), 
                             cv2.FONT_HERSHEY_SIMPLEX, 
                             3.0, (0, 0, 255), 6)
 
