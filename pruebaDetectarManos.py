@@ -214,11 +214,11 @@ def obtener_orientacion_mano(wrist_coords, middle_finger_mcp_coords, ratio_thres
     # Caso predominantemente HORIZONTAL
     # (abs_delta_x es significativamente mayor que abs_delta_y)
     # Evaluar orientación horizontal
-    # if abs_delta_y < epsilon or (abs_delta_x / abs_delta_y > ratio_threshold):
-    #     if delta_x > 0:
-    #         return "HORIZONTAL_DERECHA"
-    #     else:
-    #         return "HORIZONTAL_IZQUIERDA"
+    if abs_delta_y < epsilon or (abs_delta_x / abs_delta_y > ratio_threshold):
+        if delta_x > 0:
+            return "HORIZONTAL_DERECHA"
+        else:
+            return "HORIZONTAL_IZQUIERDA"
 
     # Si no es claramente vertical ni horizontal según el umbral
     return "DIAGONAL_INDETERMINADA"
@@ -350,71 +350,71 @@ while True:
                 orientacion = obtener_orientacion_mano(wrist, middle_mcp) # Obtenemos la orientación de la mano
                 
                 if orientacion=="VERTICAL":
-                    mensaje = "Ver"
-                    # if index_tip[1]>index_mcp[1] and middle_tip[1]>middle_mcp[1] and ring_tip[1]>ring_mcp[1] and pinky_tip[1]>pinky_mcp[1] and thumb_ip[1]>middle_mcp[1] and abs(thumb_ip[0]-middle_mcp[0])<15: # not indice_extendidoV and not corazon_extendidoV and not anular_extendidoV and not menique_extendidoV and thumb_tip[1]>middle_mcp[1] and not pulgar_extendidoV:
-                    #     mensaje="A"
-                    # elif (pulgar_extendidoHI or pulgar_extendidoHD) and 80 < abs(index_tip[1] - thumb_tip[1]) < 300 and abs(index_tip[0]-middle_tip[0])<20:
-                    #     mensaje = "C"
-                    # elif indice_extendidoHD or indice_extendidoHI and abs(thumb_tip[0]-middle_tip[0])>5 or (corazon_extendidoHD or corazon_extendidoHI) and\
-                    #     abs(thumb_tip[0]-pinky_tip[0])>15 or (menique_extendidoHD or menique_extendidoHI) and indice_extendidoV: 
-                    #     mensaje = "D"
-                    # elif not indice_extendidoV and not corazon_extendidoV and not anular_extendidoV and not menique_extendidoV and (pulgar_extendidoHD or pulgar_extendidoHI or pulgar_extendidoV) and abs(thumb_ip[0]-middle_mcp[0])>30:
-                    #     mensaje = "E"
-                    # elif menique_extendidoV and corazon_extendidoV and anular_extendidoV and index_tip[1] > thumb_tip[1] and 10<(index_tip[1]-thumb_tip[1])<30:
-                    #     mensaje="T"
-                    # elif not menique_extendidoV and not anular_extendidoV  and indice_extendidoV and corazon_extendidoV and 5 < abs(index_tip[0]-middle_tip[0]) > 40 and abs(pinky_mcp[0]-thumb_tip[0])>100:
-                    #     mensaje = "H"
-                    # elif index_tip[1]>index_mcp[1] and middle_tip[1]>middle_mcp[1] and ring_tip[1]>ring_mcp[1] and menique_extendidoV and index_pip[1]<thumb_tip[1]:
-                    #     mensaje="I"
-                    # elif indice_extendidoV and (pulgar_extendidoHD or pulgar_extendidoHI) and not menique_extendidoV and not anular_extendidoV and not corazon_extendidoV:
-                    #     mensaje="L"
-                    # elif anular_extendidoV and corazon_extendidoV and 15 > abs(thumb_tip[1]-index_tip[1]) > 5 and not (pulgar_extendidoHD or pulgar_extendidoHI):
-                    #     mensaje = "O"
-                    # elif indice_extendidoV and corazon_extendidoV and anular_extendidoV and not menique_extendidoV and abs(ring_tip[0]-index_tip[0]) < 50:
-                    #     mensaje = "P"
-                    # elif menique_extendidoV and corazon_extendidoV and anular_extendidoV and indice_extendidoV and abs(thumb_tip[0]-index_tip[0]) < 40:
-                    #     mensaje = "Q" # La letra Q está tanto en orientación vertical como indeterminada porque es una postura compleja
-                    # elif not menique_extendidoV and not anular_extendidoV and corazon_extendidoV and indice_extendidoV and abs(index_pip[1]-middle_pip[1])<15 and abs(index_pip[0]-middle_pip[0])<15: # Si el punto PIP del dedo Corazón está entre el pip y el dip del índice significa que los dedos están cruzados
-                    #     mensaje = "R"
-                    # elif anular_extendidoV and corazon_extendidoV and (pulgar_extendidoHD or pulgar_extendidoHI) and 40 > abs(thumb_mcp[1]-index_tip[1]) > 5:
-                    #     mensaje = "S"
-                    # elif not menique_extendidoV and not anular_extendidoV  and index_tip[1]<index_mcp[1] and middle_tip[1]<middle_mcp[1] and 5 < abs(index_tip[0]-middle_tip[0]) > 30 and abs(ring_tip[0]-thumb_tip[0])<=5:
-                    #     mensaje = "U"
-                    # elif index_tip[1]>index_mcp[1] and middle_tip[1]>middle_mcp[1] and ring_tip[1]>ring_mcp[1] and pinky_mcp[1]>pinky_tip[1]>pinky_dip[1]:
-                    #     mensaje="Y"
-                    # elif index_tip[1]>index_mcp[1] and middle_tip[1]>middle_mcp[1] and ring_tip[1]>ring_mcp[1] and menique_extendidoV and index_pip[1]>thumb_tip[1]:
-                    #     mensaje="J" # Es igual que la I porque es poner la misma posición de la mano dada la vuelta y hacer un gesto de giro, por eso para diferenciarla le he puesto que el pulgar deba estar levantado también
-                    # elif indice_extendidoV and corazon_extendidoV and anular_extendidoV and not menique_extendidoV and abs(pinky_tip[0]-thumb_tip[0])>5 and abs(ring_tip[0]-index_tip[0]) >= 50:
-                    #     mensaje = "W"
+                    # mensaje = "Ver"
+                    if index_tip[1]>index_mcp[1] and middle_tip[1]>middle_mcp[1] and ring_tip[1]>ring_mcp[1] and pinky_tip[1]>pinky_mcp[1] and thumb_ip[1]>middle_mcp[1] and abs(thumb_ip[0]-middle_mcp[0])<15: # not indice_extendidoV and not corazon_extendidoV and not anular_extendidoV and not menique_extendidoV and thumb_tip[1]>middle_mcp[1] and not pulgar_extendidoV:
+                        mensaje="A"
+                    elif  index_tip[1]<index_mcp[1] and middle_tip[1]<middle_mcp[1] and ring_tip[1]<ring_mcp[1] and pinky_tip[1]<pinky_mcp[1] and 30 < abs(index_tip[1] - thumb_tip[1]) < 300 and abs(index_tip[0]-middle_tip[0])<20:
+                        mensaje = "C"
+                    elif indice_extendidoHD or indice_extendidoHI and abs(thumb_tip[0]-middle_tip[0])>5 or (corazon_extendidoHD or corazon_extendidoHI) and\
+                        abs(thumb_tip[0]-pinky_tip[0])>15 or (menique_extendidoHD or menique_extendidoHI) and indice_extendidoV: 
+                        mensaje = "D"
+                    elif index_tip[1]>index_mcp[1] and middle_tip[1]>middle_mcp[1] and ring_tip[1]>ring_mcp[1] and pinky_tip[1]>pinky_mcp[1] and (pulgar_extendidoHD or pulgar_extendidoHI or pulgar_extendidoV) and abs(thumb_ip[0]-middle_mcp[0])>30:
+                        mensaje = "E"
+                    elif menique_extendidoV and corazon_extendidoV and anular_extendidoV and index_tip[1] > thumb_tip[1] and 10<(index_tip[1]-thumb_tip[1])<30:
+                        mensaje="T"
+                    elif not menique_extendidoV and not anular_extendidoV  and indice_extendidoV and corazon_extendidoV and 5 < abs(index_tip[0]-middle_tip[0]) > 40 and abs(pinky_mcp[0]-thumb_tip[0])>100:
+                        mensaje = "H"
+                    elif index_tip[1]>index_mcp[1] and middle_tip[1]>middle_mcp[1] and ring_tip[1]>ring_mcp[1] and menique_extendidoV and index_pip[1]<thumb_tip[1]:
+                        mensaje="I"
+                    elif indice_extendidoV and (pulgar_extendidoHD or pulgar_extendidoHI) and not menique_extendidoV and not anular_extendidoV and not corazon_extendidoV:
+                        mensaje="L"
+                    elif anular_extendidoV and corazon_extendidoV and 15 > abs(thumb_tip[1]-index_tip[1]) > 5 and not (pulgar_extendidoHD or pulgar_extendidoHI):
+                        mensaje = "O"
+                    elif indice_extendidoV and corazon_extendidoV and anular_extendidoV and not menique_extendidoV and abs(ring_tip[0]-index_tip[0]) < 50:
+                        mensaje = "P"
+                    elif menique_extendidoV and corazon_extendidoV and anular_extendidoV and indice_extendidoV and abs(thumb_tip[0]-index_tip[0]) < 40:
+                        mensaje = "Q" # La letra Q está tanto en orientación vertical como indeterminada porque es una postura compleja
+                    elif not menique_extendidoV and not anular_extendidoV and corazon_extendidoV and indice_extendidoV and abs(index_pip[1]-middle_pip[1])<15 and abs(index_pip[0]-middle_pip[0])<15: # Si el punto PIP del dedo Corazón está entre el pip y el dip del índice significa que los dedos están cruzados
+                        mensaje = "R"
+                    elif anular_extendidoV and corazon_extendidoV and (pulgar_extendidoHD or pulgar_extendidoHI) and 40 > abs(thumb_mcp[1]-index_tip[1]) > 5:
+                        mensaje = "S"
+                    elif not menique_extendidoV and not anular_extendidoV  and index_tip[1]<index_mcp[1] and middle_tip[1]<middle_mcp[1] and 5 < abs(index_tip[0]-middle_tip[0]) > 30 and abs(ring_tip[0]-thumb_tip[0])<=5:
+                        mensaje = "U"
+                    elif index_tip[1]>index_mcp[1] and middle_tip[1]>middle_mcp[1] and ring_tip[1]>ring_mcp[1] and pinky_mcp[1]>pinky_tip[1]>pinky_dip[1]:
+                        mensaje="Y"
+                    elif index_tip[1]>index_mcp[1] and middle_tip[1]>middle_mcp[1] and ring_tip[1]>ring_mcp[1] and menique_extendidoV and index_pip[1]>thumb_tip[1]:
+                        mensaje="J" # Es igual que la I porque es poner la misma posición de la mano dada la vuelta y hacer un gesto de giro, por eso para diferenciarla le he puesto que el pulgar deba estar levantado también
+                    elif indice_extendidoV and corazon_extendidoV and anular_extendidoV and not menique_extendidoV and abs(pinky_tip[0]-thumb_tip[0])>5 and abs(ring_tip[0]-index_tip[0]) >= 50:
+                        mensaje = "W"
                     
                 
-                elif orientacion == "HORIZONTAL_DERECHA" or "HORIZONTAL_IZQUIERDA":
-                    mensaje = "HOR"
-                    # if (menique_extendidoHD and anular_extendidoHD and corazon_extendidoHD and indice_extendidoHD) or (menique_extendidoHI and anular_extendidoHI and corazon_extendidoHI and indice_extendidoHI):
-                    #     mensaje = "B"
-                    # if (not menique_extendidoHD and not anular_extendidoHD and not corazon_extendidoHD and indice_extendidoHD) or (not menique_extendidoHI and not anular_extendidoHI and not corazon_extendidoHI and indice_extendidoHI):
-                    #     mensaje = "G"
+                elif orientacion == "HORIZONTAL_DERECHA" or orientacion =="HORIZONTAL_IZQUIERDA":
+                    # mensaje = "Hor"
+                    if (menique_extendidoHD and anular_extendidoHD and corazon_extendidoHD and indice_extendidoHD) or (menique_extendidoHI and anular_extendidoHI and corazon_extendidoHI and indice_extendidoHI):
+                        mensaje = "B"
+                    if (not menique_extendidoHD and not anular_extendidoHD and not corazon_extendidoHD and indice_extendidoHD) or (not menique_extendidoHI and not anular_extendidoHI and not corazon_extendidoHI and indice_extendidoHI):
+                        mensaje = "G"
                     
                 elif orientacion == "DIAGONAL_INDETERMINADA":
-                    mensaje = "DI"
-                    # if menique_extendidoV and corazon_extendidoV and anular_extendidoV and indice_extendidoV and abs(pinky_tip[0]-index_tip[0]) <70:
-                    #     mensaje = "Q" # La letra Q está tanto en orientación vertical como indeterminada porque es una postura compleja
-                    # elif not menique_extendidoV and not anular_extendidoV  and indice_extendidoV and corazon_extendidoV and 5 < abs(index_tip[0]-middle_tip[0]) > 40 and abs(pinky_mcp[0]-thumb_tip[0])>100:
-                    #     mensaje = "H"
-                    # elif index_tip[1]>index_mcp[1] and middle_tip[1]>middle_mcp[1] and ring_tip[1]>ring_mcp[1] and menique_extendidoV:
-                    #     mensaje="Z" # La Z es exactamente igual que la I porque se pinta el gesto con el meñique pero al pintarlo debes inclinar la mano, por eso no detecta el gesto pero si la posición
+                    # mensaje = "DI"
+                    if menique_extendidoV and corazon_extendidoV and anular_extendidoV and indice_extendidoV and abs(pinky_tip[0]-index_tip[0]) <70:
+                        mensaje = "Q" # La letra Q está tanto en orientación vertical como indeterminada porque es una postura compleja
+                    elif not menique_extendidoV and not anular_extendidoV  and indice_extendidoV and corazon_extendidoV and 5 < abs(index_tip[0]-middle_tip[0]) > 40 and abs(pinky_mcp[0]-thumb_tip[0])>100:
+                        mensaje = "H"
+                    elif index_tip[1]>index_mcp[1] and middle_tip[1]>middle_mcp[1] and ring_tip[1]>ring_mcp[1] and menique_extendidoV:
+                        mensaje="Z" # La Z es exactamente igual que la I porque se pinta el gesto con el meñique pero al pintarlo debes inclinar la mano, por eso no detecta el gesto pero si la posición
                     # elif (pulgar_extendidoHI or pulgar_extendidoHD) and abs(index_tip[1] - thumb_tip[1]) < 300 and abs(index_tip[0]-middle_tip[0])<80:
                     #     mensaje = "C"
                         
                         
                 elif orientacion == "BOCA_ABAJO":
-                    mensaje = "BA"
-                    # if index_tip[1]>index_mcp[1] and middle_tip[1]>middle_mcp[1] and ring_tip[1]>ring_mcp[1] and ring_tip[1]>middle_dip[1]:
-                    #     mensaje = "M"
-                    # elif index_tip[1]>index_mcp[1] and middle_tip[1]>middle_mcp[1] and ring_tip[1]<middle_dip[1] and abs(thumb_tip[0]-index_pip[0])>16:
-                    #     mensaje = "N" 
-                    # elif index_tip[1]>index_mcp[1] and middle_tip[1]>middle_mcp[1] and ring_tip[1]<middle_dip[1] and abs(thumb_tip[0]-index_pip[0])<=15:
-                    #     mensaje = "Ñ"# Esta letra está mal porque realmente debe tratarse con movimiento pero al no poder se me ocurrió poner el pulgar cerca del índice para diferenciarla de la N
+                    # mensaje = "BA"
+                    if index_tip[1]>index_mcp[1] and middle_tip[1]>middle_mcp[1] and ring_tip[1]>ring_mcp[1] and ring_tip[1]>middle_dip[1]:
+                        mensaje = "M"
+                    elif index_tip[1]>index_mcp[1] and middle_tip[1]>middle_mcp[1] and ring_tip[1]<middle_dip[1] and abs(thumb_tip[0]-index_pip[0])>16:
+                        mensaje = "N" 
+                    elif index_tip[1]>index_mcp[1] and middle_tip[1]>middle_mcp[1] and ring_tip[1]<middle_dip[1] and abs(thumb_tip[0]-index_pip[0])<=15:
+                        mensaje = "Ñ"# Esta letra está mal porque realmente debe tratarse con movimiento pero al no poder se me ocurrió poner el pulgar cerca del índice para diferenciarla de la N
                         
                 now = time.time()
                 if mensaje:
@@ -425,8 +425,7 @@ while True:
                 else:
                     mensaje_mostrar = ""
                 
-                print("Muñeca: " + str(wrist[1]))
-                print("Corazón MCP: " + str(middle_mcp[1]))
+                print(orientacion)
                 
                 cv2.putText(img, mensaje_mostrar, (0, 100), 
                                 cv2.FONT_HERSHEY_SIMPLEX, 
