@@ -471,10 +471,6 @@ while True:
                                 cv2.FONT_HERSHEY_SIMPLEX, 
                                 2.0, (0, 0, 255), 4)
 
-                # Mostramos la imagen
-                cv2.imshow("Image", img)
-                if cv2.waitKey(1) & 0xFF == 27:
-                        break
                 
     
     elif modoVozAtexto:
@@ -494,21 +490,21 @@ while True:
             mensaje_mostrar = ""
             mensaje_error = ""
         
-        # Mostramos la imagen
-        cv2.imshow("Cámara + voz", img)
-        
-        key = cv2.waitKey(1) & 0xFF
-        if key == 27: # Interrumpimos el programa manualmente
-            break
-        elif key == 32: # Pulsamos barra espaciadora para empezar a escuchar
-            barraEspaciadora = True
-        elif key == ord('m') or key == ord('M'): # Si se presiona 'm' (minúscula) o 'M' (mayúscula)
-            if modoSignAtexto:
-                modoSignAtexto = False
-                modoVozAtexto = True
-            else:
-                modoSignAtexto = True
-                modoVozAtexto = False
+    # Mostramos la imagen
+    cv2.imshow("Cámara + voz", img)
+    
+    key = cv2.waitKey(1) & 0xFF
+    if key == 27: # Interrumpimos el programa manualmente
+        break
+    elif key == 32: # Pulsamos barra espaciadora para empezar a escuchar
+        barraEspaciadora = True
+    elif key == ord('m') or key == ord('M'): # Si se presiona 'm' (minúscula) o 'M' (mayúscula)
+        if modoSignAtexto:
+            modoSignAtexto = False
+            modoVozAtexto = True
+        else:
+            modoSignAtexto = True
+            modoVozAtexto = False
 
 dispositivoCaptura.release()
 cv2.destroyAllWindows()
