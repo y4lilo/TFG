@@ -18,7 +18,6 @@ mic = sr.Microphone()
 mensaje_mostrar = ""
 mensaje_error = ""
 escuchando = False # Creamos esta variable para evitar que el reconocimiento de voz se dispare múltiples veces
-mensaje_final = ""
 
 # MÉTODO PARA REALIZAR LA SÍNTESIS POR VOZ 
 def escuchar_y_transcribir():
@@ -177,8 +176,7 @@ while True:
                 cv2.putText(img, mensaje_mostrar, (50, 50), 
                                 cv2.FONT_HERSHEY_TRIPLEX, 
                                 2.0, (255, 255, 255), 5)
-                mensaje_final += mensaje_mostrar
-                print(mensaje_final)
+                
 
                 
     
