@@ -1,11 +1,10 @@
 import cv2
 import mediapipe as mp
 import time
-import math 
 import speech_recognition as sr
 import threading
 import calculoDeDistancias as cdd
-
+import entrenamiento
 # -----------------------------------------------------------------------------
 # VARIABLES GLOBALES
 # -----------------------------------------------------------------------------
@@ -19,6 +18,7 @@ mic = sr.Microphone()
 mensaje_mostrar = ""
 mensaje_error = ""
 escuchando = False # Creamos esta variable para evitar que el reconocimiento de voz se dispare múltiples veces
+mensaje_final = ""
 
 # MÉTODO PARA REALIZAR LA SÍNTESIS POR VOZ 
 def escuchar_y_transcribir():
@@ -88,9 +88,6 @@ while True:
     img.flags.writeable = True
 
     if modoSignAtexto:
-        # 3) reseteo si no hay letras en 2 segundo
-        if time.time() - ultimo_tiempo > 2.0:
-            mensaje_mostrar = ""
         # Comprobamos si la mano detectada tiene varios landmarks (puntos de la mano de la imagen PuntosMano.png)
         if resultado.multi_hand_landmarks:
             # En caso de que si por cada landmark mostramos el punto
@@ -152,7 +149,7 @@ while True:
                 orientacion = cdd.obtener_orientacion_mano(wrist, middle_mcp) # Obtenemos la orientación de la mano
                 
                 
-                mensaje = cdd.letra_leida(thumb_tip, index_tip, middle_tip,ring_tip, pinky_tip,
+                mensaje = entrenamiento.letra_leida(thumb_tip, index_tip, middle_tip,ring_tip, pinky_tip,
                                           thumb_ip, index_pip, middle_pip, ring_pip, pinky_pip,
                                           index_dip, middle_dip, ring_dip, pinky_dip,
                                           thumb_mcp, index_mcp, middle_mcp, ring_mcp, pinky_mcp,
@@ -170,13 +167,18 @@ while True:
                         mensaje_mostrar += mensaje
                         ultimo_detection_time = now
                         ultimo_tiempo = time.time()
+                    # 3) reseteo si no hay letras en 2 segundo
+                    if time.time() - ultimo_tiempo > 2.0:
+                        mensaje_mostrar = ""
                 
                 # print(orientacion)
-                
+                # print(mensaje_mostrar)
                 # Mostramos la letra/buffer de letras o mensaje en caso de sintesis por voz
-                cv2.putText(img, mensaje_mostrar, (0, 100), 
-                                cv2.FONT_HERSHEY_SIMPLEX, 
-                                2.0, (0, 0, 255), 4)
+                cv2.putText(img, mensaje_mostrar, (50, 50), 
+                                cv2.FONT_HERSHEY_TRIPLEX, 
+                                2.0, (255, 255, 255), 5)
+                mensaje_final += mensaje_mostrar
+                print(mensaje_final)
 
                 
     
