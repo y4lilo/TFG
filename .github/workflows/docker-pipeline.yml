@@ -3,7 +3,9 @@ name: Deploy Docker Image to GHCR
 on:
   push:
     branches: [ "main" ]
-
+permissions:
+  packages: write
+  contents: read
 jobs:
       set-tag:
         uses: ./.github/workflows/set-tag.yml
