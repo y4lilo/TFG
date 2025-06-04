@@ -1,0 +1,8 @@
+flask
+requests
+numpy
+pandas
+opencv-python
+mediapipe
+SpeechRecognition
+pyaudio

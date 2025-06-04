@@ -1,0 +1,23 @@
+name: Deploy Docker Image to GHCR
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+      set-tag:
+        uses: ./.github/workflows/set-tag.yml
+
+      build_image:
+        needs: set-tag
+        uses: ./.github/workflows/build-image.yml
+        with:
+          image_name: y4lilo/tfg
+          tag: ${{ needs.set-tag.outputs.tag }}
+
+      push-image:
+        needs: [set-tag, build_image]
+        uses: ./.github/workflows/push-image.yml
+        with:
+          image_name: ${{ needs.build_image.outputs.image_name }}
+          tag: ${{ needs.set-tag.outputs.tag }}
