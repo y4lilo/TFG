@@ -1,5 +1,4 @@
 import math
-import threading
 
 # -----------------------------------------------------------------------------
 # MÉTODO PARA CALCULAR LA DISTANCIA ENTRE 2 PUNTOS (sin cambios)

@@ -37,7 +37,7 @@ def escuchar_y_transcribir():
             mensaje_error = "❓ No se ha podido reconocer."
         except sr.RequestError as e:
             mensaje_error = f"⚠️ Error en Google: {e}"
-    escuchando = False # Lo ponemos a false para 
+    escuchando = False
 
 # -----------------------------------------------------------------------------
 #                              INICIO DEL PROGRAMA
@@ -167,7 +167,7 @@ while True:
                         ultimo_detection_time = now
                         ultimo_tiempo = time.time()
                     # 3) reseteo si no hay letras en 2 segundo
-                    if time.time() - ultimo_tiempo > 2.0:
+                    elif time.time() - ultimo_tiempo > 2.0:
                         mensaje_mostrar = ""
                 
                 # print(orientacion)
@@ -198,7 +198,7 @@ while True:
             mensaje_error = ""
         
     # Mostramos la imagen
-    cv2.imshow("Cámara + voz", img)
+    cv2.imshow("Cámara", img)
     
     key = cv2.waitKey(1) & 0xFF
     if key == 27: # Interrumpimos el programa manualmente

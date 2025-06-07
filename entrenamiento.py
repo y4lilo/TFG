@@ -1,5 +1,3 @@
-import math
-
 def letra_leida(thumb_tip,
 index_tip,
 middle_tip,
@@ -35,7 +33,6 @@ pulgar_extendidoHD,
 pulgar_extendidoHI,
 pulgar_extendidoV,
 orientacion):
-    
     
     mensaje = ""
     # Opciones de Letra para cada una de las orientaciones para ahorrar calculos al programa
