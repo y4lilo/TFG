@@ -27,7 +27,7 @@ def escuchar_y_transcribir():
     with mic as source:
         r.adjust_for_ambient_noise(source, duration=1)
         try:
-            audio = r.listen(source, timeout=4, pharse_time_limit=8) # Escucha el audio durante 4 segundos
+            audio = r.listen(source, timeout=4) # Escucha el audio durante 4 segundos
             mensaje_mostrar = r.recognize_google(audio, language="es-ES").lower()
             print(f"👂 Transcrito: {mensaje_mostrar}")
             mensaje_error=""
