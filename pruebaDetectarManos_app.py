@@ -11,9 +11,6 @@ import entrenamiento
 # OpenRouter API 
 openrouter_api_key = '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'
 
-# Inicializamos el reconocimiento de voz y el micrófono
-r = sr.Recognizer()
-mic = sr.Microphone()
 
 mensaje_mostrar = ""
 mensaje_error = ""
@@ -24,6 +21,9 @@ def escuchar_y_transcribir():
     global mensaje_mostrar, mensaje_error, escuchando # Recogemos las variables de fuera de la función
     escuchando = True
     print("🔴 Escuchando...")
+    # Inicializamos el reconocimiento de voz y el micrófono
+    r = sr.Recognizer()
+    mic = sr.Microphone(device_index=1)
     with mic as source:
         r.adjust_for_ambient_noise(source, duration=1)
         try:
