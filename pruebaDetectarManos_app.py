@@ -27,7 +27,7 @@ def escuchar_y_transcribir():
     with mic as source:
         r.adjust_for_ambient_noise(source, duration=1)
         try:
-            audio = r.listen(source, timeout=2)
+            audio = r.listen(source, timeout=4, pharse_time_limit=8) # Escucha el audio durante 4 segundos
             mensaje_mostrar = r.recognize_google(audio, language="es-ES").lower()
             print(f"👂 Transcrito: {mensaje_mostrar}")
             mensaje_error=""
@@ -183,9 +183,8 @@ while True:
     elif modoVozAtexto:
         if barraEspaciadora and not escuchando:
             threading.Thread(target=escuchar_y_transcribir, daemon = True).start() # Metemos el método escuchar_y_transcribir en un hilo para que no bloquee la cámara y que pueda escuchar en segundo plano
-            ultimo_tiempo=time.time()
             barraEspaciadora = False # Volvemos a desactivarlo hasta que se pulse el espacio
-        
+        ultimo_tiempo=time.time()
         # Esperar a que haya algo que mostrar
         texto_final = mensaje_mostrar if mensaje_mostrar else mensaje_error
         # Mostrar el texto (solo si hay algo)
