@@ -11,7 +11,6 @@ import entrenamiento
 # OpenRouter API 
 openrouter_api_key = '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'
 
-
 mensaje_mostrar = ""
 mensaje_mostrar_VAT = ""
 tiempo_mensaje_vat = 0
@@ -39,7 +38,7 @@ def escuchar_y_transcribir():
             mensaje_error = "❓ No se ha podido reconocer."
         except sr.RequestError as e:
             mensaje_error = f"⚠️ Error en Google: {e}"
-    tiempo_mensaje_vat = time.time()
+    tiempo_mensaje_vat = time.time() # Actualizamos el tiempo de deteccion del mensaje
     escuchando = False
 
 # -----------------------------------------------------------------------------
@@ -63,7 +62,7 @@ mpDibujo = mp.solutions.drawing_utils
 # Esto sirve para darle estilo al dibujo
 mpDrawingStyles = mp.solutions.drawing_styles
 
-
+# Variables de tiempo para las letras del modo lengua de signos
 ultimo_tiempo_letra = time.time()
 ultimo_tiempo_actividad = time.time()
 now = time.time()
@@ -187,7 +186,7 @@ while True:
             
         if (mensaje_mostrar_VAT or mensaje_error) and (time.time() - tiempo_mensaje_vat <= 5.0):
             texto_final = mensaje_mostrar_VAT if mensaje_mostrar_VAT else mensaje_error
-        else:
+        else: # En caso de que no se detecte nada en 5 segundos se borrará todo
             mensaje_mostrar_VAT = ""
             mensaje_error = ""
             texto_final = ""
@@ -198,8 +197,9 @@ while True:
     # Mostramos la imagen
     cv2.imshow("Cámara", img)
     
-    key = cv2.waitKey(1) & 0xFF
-    if key == 27: # Interrumpimos el programa manualmente
+    # Control de las teclas.
+    key = cv2.waitKey(1) & 0xFF 
+    if key == 27: # Interrumpimos el programa manualmente pulsando la texla esc
         break
     elif key == 32: # Pulsamos barra espaciadora para empezar a escuchar
         barraEspaciadora = True
