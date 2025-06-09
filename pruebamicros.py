@@ -1,4 +1,3 @@
-import speech_recognition as sr
 import pyaudio
 
 def listar_dispositivos_validos():

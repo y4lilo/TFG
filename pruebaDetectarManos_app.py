@@ -23,7 +23,7 @@ def escuchar_y_transcribir():
     print("🔴 Escuchando...")
     # Inicializamos el reconocimiento de voz y el micrófono
     r = sr.Recognizer()
-    mic = sr.Microphone(device_index=1)
+    mic = sr.Microphone() # Agregar device_index =(Índice del dispositivo seleccionado en pruebamicros.py) en caso de no reconocer audio por el micrófono
     with mic as source:
         r.adjust_for_ambient_noise(source, duration=1)
         try:
