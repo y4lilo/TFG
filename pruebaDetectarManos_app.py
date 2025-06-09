@@ -8,9 +8,6 @@ import entrenamiento
 # -----------------------------------------------------------------------------
 # VARIABLES GLOBALES
 # -----------------------------------------------------------------------------
-# OpenRouter API 
-openrouter_api_key = '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'
-
 mensaje_mostrar = ""
 mensaje_mostrar_VAT = ""
 tiempo_mensaje_vat = 0
