@@ -35,6 +35,19 @@ Puedes instalar todas las dependencias ejecutando el siguiente comando en tu ter
 
 pip install opencv-python mediapipe SpeechRecognition pyaudio
 
+IMPORTANTE
+La instalación de mediapipe es que solo es
+compatible oficialmente con las siguientes versiones de Python:
+- Python 3.7
+- Python 3.8
+- Python 3.9
+- Python 3.10
+
+NO es compatible oficialmente con:
+- Python 3.6 o anteriores (obsoleto)
+- Python 3.11 o 3.12 (puede que funcione parcialmente, pero no está oficialmente
+soportado y pueden fallar ciertas dependencias o binarios precompilados)
+
 
 USO Y CONTROLES
 ----------------------------------------------------------------------
