@@ -13,12 +13,14 @@ openrouter_api_key = 'sk-or-v1-631c8721e5098c06fc326da5db3bb022db0b2a7acb0f5c244
 
 
 mensaje_mostrar = ""
+mensaje_mostrar_VAT = ""
+tiempo_mensaje_vat = 0
 mensaje_error = ""
 escuchando = False # Creamos esta variable para evitar que el reconocimiento de voz se dispare múltiples veces
 
 # MÉTODO PARA REALIZAR LA SÍNTESIS POR VOZ 
 def escuchar_y_transcribir():
-    global mensaje_mostrar, mensaje_error, escuchando # Recogemos las variables de fuera de la función
+    global mensaje_mostrar_VAT,tiempo_mensaje_vat, mensaje_error, escuchando # Recogemos las variables de fuera de la función
     escuchando = True
     print("🔴 Escuchando...")
     # Inicializamos el reconocimiento de voz y el micrófono
@@ -28,8 +30,8 @@ def escuchar_y_transcribir():
         r.adjust_for_ambient_noise(source, duration=1)
         try:
             audio = r.listen(source, timeout=4) # Escucha el audio durante 4 segundos
-            mensaje_mostrar = r.recognize_google(audio, language="es-ES").lower()
-            print(f"👂 Transcrito: {mensaje_mostrar}")
+            mensaje_mostrar_VAT = r.recognize_google(audio, language="es-ES").lower()
+            print(f"👂 Transcrito: {mensaje_mostrar_VAT}")
             mensaje_error=""
         except sr.WaitTimeoutError:
             mensaje_error = "🔇 No se detectó audio."
@@ -37,6 +39,7 @@ def escuchar_y_transcribir():
             mensaje_error = "❓ No se ha podido reconocer."
         except sr.RequestError as e:
             mensaje_error = f"⚠️ Error en Google: {e}"
+    tiempo_mensaje_vat = time.time()
     escuchando = False
 
 # -----------------------------------------------------------------------------
@@ -60,14 +63,10 @@ mpDibujo = mp.solutions.drawing_utils
 # Esto sirve para darle estilo al dibujo
 mpDrawingStyles = mp.solutions.drawing_styles
 
-COOLDOWN = 2.0     # segundos mínimos entre detecciones
-ultimo_detection_time = 0.0
-ultimo_tiempo = time.time()
 
-previous_pinky_tip_j = None
-previous_index_tip_z = None
-MOTION_THRESHOLD_J = 10 # Ajustar
-MOTION_THRESHOLD_Z = 15 # Ajustar
+ultimo_tiempo_letra = time.time()
+ultimo_tiempo_actividad = time.time()
+now = time.time()
 
 # Creo una variable para saber si quiere traducir de lengua de signos a texto o de voz a texto
 modoSignAtexto = True
@@ -87,6 +86,9 @@ while True:
     img.flags.writeable = True
 
     if modoSignAtexto:
+        # Reseteo del mensaje si no hay letras en 3 segundos
+        if now - ultimo_tiempo_actividad > 3.0:
+            mensaje_mostrar = ""
         # Comprobamos si la mano detectada tiene varios landmarks (puntos de la mano de la imagen PuntosMano.png)
         if resultado.multi_hand_landmarks:
             # En caso de que si por cada landmark mostramos el punto
@@ -162,13 +164,11 @@ while True:
                 # Comprobación del tiempo desde que se detectó la última letra
                 now = time.time()
                 if mensaje:
-                    if now - ultimo_detection_time >= COOLDOWN: 
+                    if now - ultimo_tiempo_letra >= 2.0: 
                         mensaje_mostrar += mensaje
-                        ultimo_detection_time = now
-                        ultimo_tiempo = time.time()
-                    # 3) reseteo si no hay letras en 2 segundo
-                    elif time.time() - ultimo_tiempo > 2.0:
-                        mensaje_mostrar = ""
+                        ultimo_tiempo_letra = now
+                    ultimo_tiempo_actividad = now
+                
                 
                 # print(orientacion)
                 # print(mensaje_mostrar)
@@ -184,17 +184,16 @@ while True:
         if barraEspaciadora and not escuchando:
             threading.Thread(target=escuchar_y_transcribir, daemon = True).start() # Metemos el método escuchar_y_transcribir en un hilo para que no bloquee la cámara y que pueda escuchar en segundo plano
             barraEspaciadora = False # Volvemos a desactivarlo hasta que se pulse el espacio
-        ultimo_tiempo=time.time()
-        # Esperar a que haya algo que mostrar
-        texto_final = mensaje_mostrar if mensaje_mostrar else mensaje_error
+            
+        if (mensaje_mostrar_VAT or mensaje_error) and (time.time() - tiempo_mensaje_vat <= 5.0):
+            texto_final = mensaje_mostrar_VAT if mensaje_mostrar_VAT else mensaje_error
+        else:
+            mensaje_mostrar_VAT = ""
+            mensaje_error = ""
+            texto_final = ""
         # Mostrar el texto (solo si hay algo)
         if texto_final:
             cv2.putText(img, texto_final, (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2)
-        
-        # Mostrar mensaje si ha pasado un tiempo sin hablar
-        if time.time() - ultimo_tiempo > 6.0:
-            mensaje_mostrar = ""
-            mensaje_error = ""
         
     # Mostramos la imagen
     cv2.imshow("Cámara", img)
