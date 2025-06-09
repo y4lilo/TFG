@@ -1,77 +1,80 @@
----
+======================================================================
+        Traductor de Lengua de Signos (LSE) y Voz a Texto
+======================================================================
 
-# Traductor de Lengua de Signos (LSE) y Voz a Texto
+DESCRIPCIÓN
+----------------------------------------------------------------------
+Este proyecto es una aplicación en tiempo real que utiliza la cámara de un ordenador para dos funciones principales:
+1.  Traducir gestos del abecedario de la Lengua de Signos Española (LSE) a texto.
+2.  Transcribir el lenguaje hablado en español a texto mediante el micrófono.
 
-Un proyecto de visión por computadora y reconocimiento de voz que traduce gestos del abecedario de la Lengua de Signos Española (LSE) y transcribe audio a texto en tiempo real.
+La aplicación permite alternar entre estos dos modos de funcionamiento de forma sencilla.
 
-## 📝 Descripción
 
-Este proyecto presenta una aplicación multifuncional que utiliza la cámara y el micrófono de un ordenador para facilitar la comunicación a través de dos modos principales:
+CARACTERÍSTICAS
+----------------------------------------------------------------------
+- **Reconocimiento de LSE**: Detecta una mano a través de la cámara, analiza la posición de los dedos y la orientación de la mano para identificar letras del abecedario LSE.
+- **Transcripción de Voz**: En el modo de voz, puede escuchar a través del micrófono y transcribir lo que se dice a texto.
+- **Interfaz Visual**: Muestra la imagen de la cámara en tiempo real, dibujando los puntos de referencia (landmarks) de la mano detectada para dar feedback visual.
+- **Doble Modo**: Permite cambiar fácilmente entre el modo de reconocimiento de signos y el de voz.
 
-1.  **Traducción de Signos a Texto**: Interpreta en tiempo real los gestos de la mano correspondientes a las letras del abecedario de la LSE y los muestra como texto en pantalla.
-2.  **Transcripción de Voz a Texto**: Captura audio a través del micrófono y lo convierte en texto.
 
-La aplicación permite al usuario alternar entre estos dos modos de forma fluida con solo pulsar una tecla.
+REQUISITOS
+----------------------------------------------------------------------
+Para ejecutar este proyecto, necesitas tener Python 3 instalado, junto con las siguientes librerías:
 
-## ✨ Características
+- opencv-python
+- mediapipe
+- speechrecognition
+- pyaudio
 
-* **Reconocimiento de LSE en tiempo real**: Utiliza la librería MediaPipe para detectar los puntos de referencia de la mano y un sistema de reglas para clasificar las letras.
-* **Transcripción de Voz**: Integra la librería `SpeechRecognition` para realizar la conversión de voz a texto en español.
-* **Interfaz Visual Interactiva**: Muestra la señal de vídeo de la cámara, superponiendo el esqueleto de la mano detectada para proporcionar feedback visual al usuario.
-* **Modo Dual**: Permite cambiar fácilmente entre el modo de reconocimiento de signos y el de voz.
 
-## 🛠️ Requisitos e Instalación
-
-Para ejecutar este proyecto, necesitas Python 3 y las siguientes librerías.
-
-* `opencv-python`
-* `mediapipe`
-* `speechrecognition`
-* `pyaudio`
-
+INSTALACIÓN
+----------------------------------------------------------------------
 Puedes instalar todas las dependencias ejecutando el siguiente comando en tu terminal:
 
-```bash
 pip install opencv-python mediapipe SpeechRecognition pyaudio
-```
 
-## 🚀 Uso y Controles
 
+USO Y CONTROLES
+----------------------------------------------------------------------
 1.  **Ejecutar la aplicación**:
-    Abre una terminal, navega hasta el directorio del proyecto y ejecuta:
-    ```bash
+    Abre una terminal, navega hasta el directorio del proyecto y ejecuta el siguiente comando:
+    
     python pruebaDetectarManos_app.py
-    ```
-2.  **Controles del Programa**:
-    * `'m'` / `'M'`: Pulsa la tecla 'm' para **alternar** entre el modo "Signos a Texto" y "Voz a Texto".
-    * `Barra Espaciadora`: En el modo "Voz a Texto", púlsala para **iniciar la escucha**.
-    * `Esc`: Pulsa la tecla 'Escape' para **cerrar la aplicación**.
 
-## 📂 Estructura del Proyecto
+2.  **Controles del programa**:
+    - **Pulsar 'm' o 'M'**: Alterna entre el modo "Signos a Texto" y "Voz a Texto".
+    - **Pulsar la Barra Espaciadora**: En el modo "Voz a Texto", pulsa esta tecla para que la aplicación comience a escuchar.
+    - **Pulsar 'Esc'**: Cierra la aplicación en cualquier momento.
 
-* `pruebaDetectarManos_app.py`: El script principal que ejecuta la aplicación. Gestiona la captura de vídeo, la interfaz de usuario y la lógica de los modos.
-* `entrenamiento.py`: Contiene la lógica de decisión (`letra_leida`) para identificar qué letra del LSE se está representando según la geometría de la mano.
-* `calculoDeDistancias.py`: Módulo con funciones de ayuda para calcular distancias, determinar la orientación de la mano y el estado de los dedos.
-* `pruebamicros.py`: Un script de utilidad para listar los micrófonos disponibles en tu sistema y sus correspondientes índices.
 
-## 🎤 Configuración del Micrófono
+ESTRUCTURA DEL PROYECTO
+----------------------------------------------------------------------
+- **pruebaDetectarManos_app.py**: Es el fichero principal que ejecuta la aplicación. Gestiona la captura de vídeo, la interfaz de usuario y la lógica de los modos.
+- **entrenamiento.py**: Contiene la lógica de decisión para identificar qué letra del LSE se está representando según la geometría de la mano.
+- **calculoDeDistancias.py**: Módulo con funciones de ayuda para calcular distancias, determinar la orientación de la mano y el estado de los dedos (extendidos/doblados).
+- **pruebamicros.py**: Un script de utilidad para listar los micrófonos disponibles en tu sistema y sus correspondientes índices.
 
-Si el reconocimiento de voz no funciona, puede que esté utilizando el dispositivo de entrada incorrecto. Sigue estos pasos para solucionarlo:
 
-1.  Ejecuta el script `pruebamicros.py` para ver una lista de tus micrófonos y sus índices de dispositivo.
-    ```bash
+CONFIGURACIÓN DEL MICRÓFONO
+----------------------------------------------------------------------
+Si el modo de reconocimiento de voz no funciona o no detecta audio, es posible que la aplicación no esté utilizando el micrófono correcto. Para solucionarlo:
+
+1.  Ejecuta el script `pruebamicros.py`:
+    
     python pruebamicros.py
-    ```
-2.  El resultado será algo como: `1: Micrófono Externo (2 canales)`. Anota el número (índice) de tu micrófono.
 
-3.  Abre el fichero `pruebaDetectarManos_app.py` en un editor.
+2.  Este comando te mostrará una lista de los dispositivos de entrada de audio y su índice numérico (por ejemplo, `0: Micrófono Interno`, `1: Micrófono USB`).
 
-4.  Localiza la línea donde se inicializa el micrófono (aproximadamente la línea 32).
-    ```python
+3.  Abre el fichero `pruebaDetectarManos_app.py` con un editor de texto.
+
+4.  Busca la línea (aproximadamente la línea 32):
+    
     mic = sr.Microphone()
-    ```
-5.  Modifícala para añadir el `device_index` que anotaste. Por ejemplo, si tu micrófono es el dispositivo 1:
-    ```python
+
+5.  Modifícala para incluir el índice de tu micrófono. Por ejemplo, si tu micrófono es el dispositivo 1:
+    
     mic = sr.Microphone(device_index=1)
-    ```
-6.  Guarda los cambios y vuelve a ejecutar la aplicación. El reconocimiento de voz ahora debería utilizar el micrófono correcto.
+
+6.  Guarda el fichero y vuelve a ejecutar la aplicación.
